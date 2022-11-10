@@ -1,0 +1,86 @@
+﻿@page "/registration"
+@using WorkingWithDocumentation.Data
+@using System;
+@inject UserService UserService
+
+    <h3>Регистрация</h3>
+
+<div>
+    <label>Выберите роль</label>
+    <select name="role" @onchange="OnChange">
+        <option value="customer">Заказчик</option>
+        <option value="designer">Проектировщик</option>
+        <option value="developer">Застройщик</option>
+    </select>
+    <br /><br />
+    <label>Введите почту</label>
+    <input type="email" @bind-value="reg_email" placeholder="Введите почту" required>
+    <br /><br />
+    <label>Введите логин</label>
+    <input @bind-value="reg_login" placeholder="Введите логин" required>
+    <br /><br />
+    <label>Введите пароль</label>
+    <input @bind-value="reg_pass" placeholder="Введите пароль" required>
+    <br /><br />
+    <label>Повторите пароль</label>
+    <input @bind-value="reg_pass2" placeholder="Повторите пароль" required>
+    <br /><br />
+    <button name="regButton" @onclick=Register>Зарегистрироваться</button>
+    <br /><br />
+</div>
+
+@if (isError)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
+
+
+@code {
+    string reg_email;
+    string reg_login;
+    string reg_pass;
+    string reg_pass2;
+    string reg_role;
+    bool isError = false;
+    string errorMessage;
+
+    private void Register()
+    {
+        if(reg_email != null && reg_login != null && reg_pass != null && reg_pass2 != null)
+        {
+            if(reg_pass == reg_pass2)
+            {
+                switch(reg_role)
+                {
+                    
+                }
+                UserService.AddToDatabase(new User(reg_login, reg_pass, reg_role, reg_email));
+                ClearPage();
+                isError = false;
+            }
+            else
+            {
+                errorMessage = "Password dont match!";
+                isError = true;
+            }
+        }
+        else
+        {
+            errorMessage = "Not all fields are filled!";
+            isError = true;
+        }
+    }
+
+    private void ClearPage()
+    {
+        reg_email = "";
+        reg_login = "";
+        reg_pass = "";
+        reg_pass2 = "";
+    }
+
+    private void OnChange(ChangeEventArgs e) => reg_role = e.Value.ToString();
+}
+
