@@ -3,39 +3,71 @@
 @inject UserService UserService
 @inject NavigationManager Navigation
 
-
 <h3>Авторизация</h3>
-    <div>
-        <label>Введите логин</label>
-        <input @bind-value="auth_login"  placeholder="Введите логин">
-        <br /><br />
-        <label>Введите пароль</label>
-        <input type="password" @bind-value="auth_pass" placeholder="Введите пароль">
-        <br /><br />
-        <button @onclick=Autorization name="authButton">Войти</button>
-        <button @onclick=Registration name="authButton">Регистрация</button>
-        <br /><br />
+
+<div>
+    <label>Выберите роль</label>
+    <select name="role" @onchange="OnChange">
+        <option value="customer">Заказчик</option>
+        <option value="designer">Проектировщик</option>
+        <option value="developer">Застройщик</option>
+    </select>
+    <br/><br/>
+    <label>Введите логин</label>
+    <input @bind-value="auth_login"  placeholder="Введите логин">
+    <br /><br />
+    <label>Введите пароль</label>
+    <input type="password" @bind-value="auth_pass" placeholder="Введите пароль">
+    <br /><br />
+    <button @onclick=Autorization name="authButton">Войти</button>
+    <button @onclick=Registration name="authButton">Регистрация</button>
+    <br /><br />
+</div>
+
+@if (isError)
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
     </div>
+}
 
 @code {
-    string auth_login;
-    string auth_pass;
-    User user;
-    List<User> users = new List<User>();
+    string auth_login = "";
+    string auth_pass = "";
+    string reg_role = "customer";
     bool isError = false;
-    string errorMessage;
+    string errorMessage = "";
 
     private void Autorization()
     {
         if(auth_login != "" && auth_pass != "")
         {
-            user = UserService.CheckUser(auth_login, auth_pass);
-
-            if(user != null)
+            switch (reg_role)
             {
-                users.Add(user);
-                auth_login = null;
-                auth_pass = null;
+                case "customer":
+                    UserService.AuthorizeCustomer(auth_login, auth_pass);
+                    break;
+
+                case "designer":
+                    UserService.AuthorizeDesigner(auth_login, auth_pass);
+                    break;
+
+                case "developer":
+                    UserService.AuthorizeDeveloper(auth_login, auth_pass);
+                    break;
+
+                default:
+                    break;
+            }
+
+            auth_pass = "";
+
+            if (UserService.CurrentCustomer is not null 
+                || UserService.CurrentDesigner is not null 
+                || UserService.CurrentDeveloper is not null)
+            {
+                auth_login = "";
+                Navigation.NavigateTo("/account");
                 isError = false; 
             }
             else
@@ -50,4 +82,6 @@
     {
         Navigation.NavigateTo("/registration");
     }
+
+    private void OnChange(ChangeEventArgs e) => reg_role = e.Value.ToString();
 }

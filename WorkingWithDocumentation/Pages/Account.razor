@@ -1,0 +1,5 @@
+﻿@page "/account"
+@using WorkingWithDocumentation.Data
+@inject UserService UserService
+
+<CustomerAccComponent Customer="@UserService.CurrentCustomer"/>

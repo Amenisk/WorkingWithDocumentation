@@ -38,13 +38,13 @@
 
 
 @code {
-    string reg_email;
-    string reg_login;
-    string reg_pass;
-    string reg_pass2;
-    string reg_role;
+    string reg_email = "";
+    string reg_login = "";
+    string reg_pass = "";
+    string reg_pass2 = "";
+    string reg_role = "customer";
     bool isError = false;
-    string errorMessage;
+    string errorMessage = "";
 
     private void Register()
     {
@@ -54,9 +54,22 @@
             {
                 switch(reg_role)
                 {
-                    
+                    case "customer":
+                        UserService.AddCustomerToDB(new Customer(reg_login, reg_pass, reg_role, reg_email));
+                        break;
+
+                    case "designer":
+                        UserService.AddDesignerToDB(new Designer(reg_login, reg_pass, reg_role, reg_email));
+                        break;
+
+                    case "developer":
+                        UserService.AddDeveloperToDB(new Developer(reg_login, reg_pass, reg_role, reg_email));
+                        break;
+
+                    default:
+                        break;
                 }
-                UserService.AddToDatabase(new User(reg_login, reg_pass, reg_role, reg_email));
+                
                 ClearPage();
                 isError = false;
             }

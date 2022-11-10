@@ -11,11 +11,13 @@ namespace WorkingWithDocumentation.Data
         public string Password { get; set; }
         public string Email { get ; set; }
         public string Telephone { get; set; }
+        public string Role { get; set; }
 
         public User(string login, string password, string role, string email)
         {
             Login = login;
             Password = password;
+            Role = role;
             Email = email;
         }
     }
