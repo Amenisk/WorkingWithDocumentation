@@ -64,12 +64,12 @@ namespace WorkingWithDocumentation.Data
 
             collection.InsertOne(document);
         }
-        public List<int> GetListOfNumberProjects(Customer customer)
+        public List<int> GetListOfNumberProjects(string departament)
         {
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("DocumentFlow");
             var collection = database.GetCollection<Project>("Projects");
-            var projects = collection.Find(x => x.RespCustomer.Equals(customer)).ToList<Project>();
+            var projects = collection.Find(x => x.Type == departament).ToList<Project>();
             List<int> numbersOfProjects = new List<int>();
 
             foreach (var pr in projects)
@@ -96,6 +96,19 @@ namespace WorkingWithDocumentation.Data
             var collection = database.GetCollection<Project>("ProjectTemplates");
 
             return collection.Find(x => x.Type == departament).FirstOrDefault().Documents;
+        }
+
+        public void UpdateDocumentBoolByNumber(Document doc)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Document>("Documents");
+            var filter = Builders<Document>.Filter.Eq("NumberOfDocument", doc.NumberOfDocument);
+            var update1 = Builders<Document>.Update.Set("IsImportant", doc.IsImportant);
+            var update2 = Builders<Document>.Update.Set("IsApproved", doc.IsApproved);
+
+            collection.UpdateOne(filter, update1);
+            collection.UpdateOne(filter, update2);
         }
     }
 }

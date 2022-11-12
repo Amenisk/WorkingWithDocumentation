@@ -21,9 +21,25 @@
                 <tr>
                     <td>@doc.NumberOfDocument</td>
                     <td>@doc.NameOfDocument</td>
-                    <td><input type="checkbox" @onclick="() => IsImportant(doc)"/></td>
-                    <td><input type="checkbox" @onclick="() => IsApproved(doc)" /></td>
-                    <td><button></button></td>
+                    @if(doc.IsImportant)
+                    {
+                        <td><input name="isImportant" type="checkbox" checked="checked" @onclick="() => IsImportant(doc)"/></td>
+                    } 
+                    else
+                    {
+                        <td><input name="isImportant" type="checkbox" checked="checked" @onclick="() => IsImportant(doc)"/></td>
+                    }
+
+                    @if(doc.IsApproved)
+                    {
+                        <td><input name="isApproved" type="checkbox" checked="checked" @onclick="() => IsApproved(doc)" /></td>
+                    }
+                    else
+                    {
+                        <td><input name="isApproved" type="checkbox" @onclick="() => IsApproved(doc)" /></td>
+                    }
+                    
+                    <td><button>Скачать</button></td>
                 </tr>
             }
         </tbody>
@@ -33,6 +49,7 @@
 @code
 {
     Project project;
+    string check;
 
     protected override void OnInitialized()
     {
@@ -43,10 +60,12 @@
     private void IsImportant(Document doc)
     {
         doc.IsImportant = !doc.IsImportant;
+        ProjectService.UpdateDocumentBoolByNumber(doc);
     }
 
     private void IsApproved(Document doc)
     {
         doc.IsApproved = !doc.IsApproved;
+        ProjectService.UpdateDocumentBoolByNumber(doc);      
     }
 }

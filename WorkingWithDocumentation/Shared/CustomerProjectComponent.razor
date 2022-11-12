@@ -30,7 +30,7 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        numbersOfProjects = ProjectService.GetListOfNumberProjects(Customer);
+        numbersOfProjects = ProjectService.GetListOfNumberProjects(Customer.Departament);
     }
 
     private void CreateProject()

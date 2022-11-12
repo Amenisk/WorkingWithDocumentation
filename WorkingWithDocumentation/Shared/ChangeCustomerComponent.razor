@@ -16,19 +16,15 @@
 <input @bind-value="_customer.FullName" placeholder="Введите ФИО" required>
 <br/><br/>
 
-@if (Customer.Departament is null)
-{
-        <label>Выберите отрасль</label>
-        <select name="departament" @onchange="OnChange">
-            <option value=null></option>
-            <option value="Водоснабжение">Водоснабжение</option>
-            <option value="Газификация">Газификация</option>
-        </select>
-}
-else
-{
-        <label>Отрасль: @_customer.Departament</label>
-}
+
+<label>Выберите отрасль</label>
+<select name="departament" @onchange="OnChange">
+    <option value=null></option>
+    <option value="Водоснабжение">Водоснабжение</option>
+    <option value="Газификация">Газификация</option>
+</select>
+
+<label>Отрасль: @_customer.Departament</label>
 
 <br />
 <br />
@@ -51,7 +47,7 @@ else
         UserService.ReplaceCustomer(_customer);
     }
 
-    private void OnChange(ChangeEventArgs e) => Customer.Departament = e.Value.ToString();
+    private void OnChange(ChangeEventArgs e) => _customer.Departament = e.Value.ToString();
 
     private void Return()
     {

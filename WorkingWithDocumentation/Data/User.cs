@@ -10,6 +10,7 @@ namespace WorkingWithDocumentation.Data
         public string Login { get; private set; }
         public string Password { get; set; }
         public string Email { get ; set; }
+        [BsonIgnoreIfDefault]
         public string Telephone { get; set; }
         public string Role { get; set; }
 
