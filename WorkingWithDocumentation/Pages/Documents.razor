@@ -1,0 +1,52 @@
+﻿@page "/documents"
+@inject UserService UserService
+@inject ProjectService ProjectService
+
+
+@if(project is not null)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">№ документа</th>
+                <th scope="col">Наименование документа</th>
+                <th scope="col">Важный документ</th>
+                <th scope="col">Утверждён</th>
+                <th scope="col">Скачать</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var doc in project.Documents)
+            {
+                <tr>
+                    <td>@doc.NumberOfDocument</td>
+                    <td>@doc.NameOfDocument</td>
+                    <td><input type="checkbox" @onclick="() => IsImportant(doc)"/></td>
+                    <td><input type="checkbox" @onclick="() => IsApproved(doc)" /></td>
+                    <td><button></button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code
+{
+    Project project;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        project = ProjectService.GetProjectFromDBByNumber(ProjectService.NumberOfCurrentProject);
+    }
+
+    private void IsImportant(Document doc)
+    {
+        doc.IsImportant = !doc.IsImportant;
+    }
+
+    private void IsApproved(Document doc)
+    {
+        doc.IsApproved = !doc.IsApproved;
+    }
+}

@@ -1,30 +1,31 @@
 @inject NavigationManager Navigation
 @inject UserService UserService
 
-@if(Customer is not null)
+@if(Developer is not null)
 {
     <h3>Профиль</h3>
 
-    <p>ФИО: @Customer.FullName</p>
-    <p>E-mail: @Customer.Email</p>
-    <p>Телефон: @Customer.Telephone</p>
-    <p>Отрасль: @Customer.Departament</p>
+    <p>Застройщик: @Developer.DeveloperName</p>
+    <p>ОГРН: @Developer.PSRN</p>
+    <p>ИНН: @Developer.ITN</p>
+    <p>КПП: @Developer.KPP</p>
+    <p>Адрес: @Developer.Address</p>
+    <p>E-mail: @Developer.Email</p>
+    <p>Телефон: @Developer.Telephone</p>
+    <p>Руководитель Исполнительного комитета РТ: @Developer.HeadOfExecutiveCommitteeRTFN</p>
 
     <button name="navigateButton" @onclick=EditProfile>Редактировать профиль</button>
     <button name="exitButton" @onclick=LogOut>Выйти</button>
-
 }
 
 @code {
     [Parameter]
-    public Customer Customer { get; set; }
+    public Developer Developer { get; set; }
 
     private void EditProfile()
     {
         Navigation.NavigateTo("/editprofile");
     }
-
-    private void OnChange(ChangeEventArgs e) => Customer.Departament = e.Value.ToString();
 
     private void LogOut()
     {

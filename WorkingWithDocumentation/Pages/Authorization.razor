@@ -1,48 +1,60 @@
 ﻿@page "/authorization"
-@using WorkingWithDocumentation.Data
 @inject UserService UserService
 @inject NavigationManager Navigation
 
-<h3>Авторизация</h3>
-
-<div>
-    <label>Выберите роль</label>
-    <select name="role" @onchange="OnChange">
-        <option value="customer">Заказчик</option>
-        <option value="designer">Проектировщик</option>
-        <option value="developer">Застройщик</option>
-    </select>
-    <br/><br/>
-    <label>Введите логин</label>
-    <input @bind-value="auth_login"  placeholder="Введите логин">
-    <br /><br />
-    <label>Введите пароль</label>
-    <input type="password" @bind-value="auth_pass" placeholder="Введите пароль">
-    <br /><br />
-    <button @onclick=Autorization name="authButton">Войти</button>
-    <button @onclick=Registration name="authButton">Регистрация</button>
-    <br /><br />
-</div>
-
-@if (isError)
+@if(!UserService.IsAuthorized())
 {
-    <div class="alert alert-danger" role="alert">
-        @errorMessage
+    <h3>Авторизация</h3>
+
+    <div>
+        <label>Выберите роль</label>
+        <select name="role" @onchange="OnChange">
+            <option value=""></option>
+            <option value="customer">Заказчик</option>
+            <option value="designer">Проектировщик</option>
+            <option value="developer">Застройщик</option>
+        </select>
+        <br /><br />
+        <label>Введите логин</label>
+        <input @bind-value="auth_login" placeholder="Введите логин">
+        <br /><br />
+        <label>Введите пароль</label>
+        <input type="password" @bind-value="auth_pass" placeholder="Введите пароль">
+        <br /><br />
+        <button @onclick=Autorization name="authButton">Войти</button>
+        <button @onclick=Registration name="authButton">Регистрация</button>
+        <br /><br />
+    </div>
+
+    @if (isError)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+}
+else
+{
+    <div class="modal-body">
+        <h5>Выйдите с аккаунта</h5>
+        <p>Чтобы снова авторизироваться, нужно сначала выйти со своего аккаунта</p>
+        <p><button class="btn btn-secondary popover-test" @onclick=UserService.LogOut>Выйти с аккаунта</button></p>
     </div>
 }
+
 
 @code {
     string auth_login = "";
     string auth_pass = "";
-    string reg_role = "customer";
+    string auth_role = "";
     bool isError = false;
     string errorMessage = "";
 
     private void Autorization()
     {
-        if(auth_login != "" && auth_pass != "")
+        if(auth_login != "" && auth_pass != "" && auth_role != "")
         {
-            switch (reg_role)
+            switch (auth_role)
             {
                 case "customer":
                     UserService.AuthorizeCustomer(auth_login, auth_pass);
@@ -72,7 +84,7 @@
             }
             else
             {
-                errorMessage = "Wrong login or password!";
+                errorMessage = "Неправильный логин или пароль!";
                 isError = true;
             }
         }
@@ -83,5 +95,5 @@
         Navigation.NavigateTo("/registration");
     }
 
-    private void OnChange(ChangeEventArgs e) => reg_role = e.Value.ToString();
+    private void OnChange(ChangeEventArgs e) => auth_role = e.Value.ToString();
 }

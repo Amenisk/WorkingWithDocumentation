@@ -1,0 +1,69 @@
+@inject NavigationManager Navigation
+@inject UserService UserService
+
+<h3>Редактировать профиль</h3>
+
+<label>Введите пароль</label>
+<input @bind-value="_designer.Password" placeholder="Введите пароль" required>
+<br />
+<br />
+<label>Введите почту</label>
+<input type="email" @bind-value="_designer.Email" placeholder="Введите почту" required>
+<br />
+<br />
+<label>Введите телефон</label>
+<input type="tel" @bind-value="_designer.Telephone" placeholder="Введите телефон" required>
+<br />
+<br />
+<label>Введите название проектной организации</label>
+<input @bind-value="_designer.NameOfDesignOrg" placeholder="Введите название" required>
+<br />
+<br />
+<label>Введите ОГРН</label>
+<input @bind-value="_designer.PSRN" placeholder="Введите ОГРН" required>
+<br />
+<br />
+<label>Введите ИНН</label>
+<input @bind-value="_designer.ITN" placeholder="Введите ИНН" required>
+<br />
+<br />
+<label>Введите КПП</label>
+<input @bind-value="_designer.KPP" placeholder="Введите КПП" required>
+<br />
+<br />
+<label>Введите адрес</label>
+<input @bind-value="_designer.Address" placeholder="Введите адрес" required>
+<br />
+<br />
+<label>Введите ФИО директора</label>
+<input @bind-value="_designer.DirectorFN" placeholder="Введите ФИО" required>
+<br />
+<br />
+<label>Введите ФИО ГИП</label>
+<input @bind-value="_designer.ChiefProjectEngineerFN" placeholder="Введите ФИО" required>
+<br />
+<br />
+<button name="saveButton" @onclick=Save>Сохранить</button>
+<button name="navigateButton" @onclick=Return>Вернуться в профиль</button>
+
+@code {
+    [Parameter]
+    public Designer Designer { get; set; }
+
+    private Designer _designer;
+
+    protected override void OnInitialized()
+    {
+        _designer = (Designer) Designer.Clone();
+    }
+
+    private void Save()
+    {
+        UserService.ReplaceDesigner(_designer);
+    }
+
+    private void Return()
+    {
+        Navigation.NavigateTo("/account");
+    }
+}

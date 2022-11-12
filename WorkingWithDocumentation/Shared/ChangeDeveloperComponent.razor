@@ -1,0 +1,66 @@
+@inject NavigationManager Navigation
+@inject UserService UserService
+
+<h3>Редактировать профиль</h3>
+
+<label>Введите пароль</label>
+<input @bind-value="_developer.Password" placeholder="Введите пароль" required>
+<br />
+<br />
+<label>Введите почту</label>
+<input type="email" @bind-value="_developer.Email" placeholder="Введите почту" required>
+<br />
+<br />
+<label>Введите телефон</label>
+<input type="tel" @bind-value="_developer.Telephone" placeholder="Введите телефон" required>
+<br />
+<br />
+<label>Введите наименование застройщика</label>
+<input @bind-value="_developer.DeveloperName" placeholder="Введите наименование" required>
+<br />
+<br />
+<label>Введите ОГРН</label>
+<input @bind-value="_developer.PSRN" placeholder="Введите ОГРН" required>
+<br />
+<br />
+<label>Введите ИНН</label>
+<input @bind-value="_developer.ITN" placeholder="Введите ИНН" required>
+<br />
+<br />
+<label>Введите КПП</label>
+<input @bind-value="_developer.KPP" placeholder="Введите КПП" required>
+<br />
+<br />
+<label>Введите адрес</label>
+<input @bind-value="_developer.Address" placeholder="Введите адрес" required>
+<br />
+<br />
+<label>Введите ФИО руководителя исполнительного комитета РТ</label>
+<input @bind-value="_developer.HeadOfExecutiveCommitteeRTFN" placeholder="Введите ФИО" required>
+<br />
+<br />
+<button name="saveButton" @onclick=Save>Сохранить</button>
+<button name="navigateButton" @onclick=Return>Вернуться в профиль</button>
+
+@code {
+    [Parameter]
+    public Developer Developer { get; set; }
+
+    private Developer _developer;
+
+    protected override void OnInitialized()
+    {
+        _developer = (Developer) Developer.Clone();
+    }
+
+    private void Save()
+    {
+        UserService.ReplaceDeveloper(_developer);
+    }
+
+    private void Return()
+    {
+        Navigation.NavigateTo("/account");
+    }
+}
+

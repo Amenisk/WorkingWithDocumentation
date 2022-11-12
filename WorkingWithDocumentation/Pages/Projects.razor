@@ -1,0 +1,18 @@
+﻿@page "/projects"
+@inject UserService UserService
+
+@if(UserService.IsAuthorized())
+{
+    if(UserService.CurrentCustomer is not null)
+    {
+        <CustomerProjectComponent Customer="@UserService.CurrentCustomer" />
+    }
+}
+else
+{
+    <div class="modal-body">
+        <h5>Авторизируйтесь</h5>
+        <p>Чтобы работать с проектами, нужно сначала авторизироваться</p>
+        <p><a href="/authorization" role="button" class="btn btn-secondary popover-test" title="">Перейти к авторизации</a></p>
+    </div>
+}

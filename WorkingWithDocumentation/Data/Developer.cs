@@ -5,6 +5,8 @@ namespace WorkingWithDocumentation.Data
     public class Developer : User
     {
         [BsonIgnoreIfDefault]
+        public string? DeveloperName { get; set; }
+        [BsonIgnoreIfDefault]
         public string? PSRN { get; set; }
         [BsonIgnoreIfDefault]
         public string? ITN { get; set; }

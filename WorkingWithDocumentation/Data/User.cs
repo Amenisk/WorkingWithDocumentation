@@ -20,5 +20,10 @@ namespace WorkingWithDocumentation.Data
             Role = role;
             Email = email;
         }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

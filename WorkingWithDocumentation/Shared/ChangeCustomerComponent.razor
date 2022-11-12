@@ -1,0 +1,60 @@
+﻿@inject NavigationManager Navigation
+@inject UserService UserService
+
+<h3>Редактировать профиль</h3>
+
+<label>Введите пароль</label>
+<input @bind-value="_customer.Password" placeholder="Введите пароль" required>
+<br/><br/>
+<label>Введите почту</label>
+<input type="email" @bind-value="_customer.Email" placeholder="Введите почту" required>
+<br/><br/>
+<label>Введите телефон</label>
+<input type="tel" @bind-value="_customer.Telephone" placeholder="Введите телефон" required>
+<br/><br/>
+<label>Введите ФИО</label>
+<input @bind-value="_customer.FullName" placeholder="Введите ФИО" required>
+<br/><br/>
+
+@if (Customer.Departament is null)
+{
+        <label>Выберите отрасль</label>
+        <select name="departament" @onchange="OnChange">
+            <option value=null></option>
+            <option value="Водоснабжение">Водоснабжение</option>
+            <option value="Газификация">Газификация</option>
+        </select>
+}
+else
+{
+        <label>Отрасль: @_customer.Departament</label>
+}
+
+<br />
+<br />
+<button name="saveButton" @onclick=Save>Сохранить</button>
+<button name="navigateButton" @onclick=Return>Вернуться в профиль</button>
+
+@code {
+    [Parameter]
+    public Customer Customer { get; set; }
+
+    private Customer _customer;
+
+    protected override void OnInitialized()
+    {
+        _customer = (Customer) Customer.Clone();
+    }
+
+    private void Save()
+    {
+        UserService.ReplaceCustomer(_customer);
+    }
+
+    private void OnChange(ChangeEventArgs e) => Customer.Departament = e.Value.ToString();
+
+    private void Return()
+    {
+        Navigation.NavigateTo("/account");
+    }
+}

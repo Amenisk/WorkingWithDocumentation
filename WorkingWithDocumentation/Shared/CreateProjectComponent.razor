@@ -1,0 +1,104 @@
+@inject ProjectService ProjectService
+@inject UserService UserService
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Назначьте дизайнера</h3>
+                <select size="@DesignerCount" @onchange=DesignerChange>
+                    <option value=null disabled></option>
+                    @foreach (var name in NamesOfDesignOrgs)
+                    {
+                        <option value=@name>@name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Назначьте застройщика</h3>
+                <select size="@DeveloperCount" @onchange=DeveloperChange>
+                    <option value=null disabled></option>
+                    @foreach (var name in DevelopersNames)
+                    {
+                        <option value=@name>@name</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary" @onclick=CreateProject>Создать проект</button>
+</div>
+
+@if(isError)
+{
+    <div class="alert alert-danger" role="alert">
+        Вы не выбрали проектировщика или застройщика, или вы не заполнили свой профиль!
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public Customer Customer { get; set; }
+    private Designer designer;
+    private Developer developer;
+
+    List<string> NamesOfDesignOrgs { get; set; }
+    List<string> DevelopersNames { get; set; }
+    int DesignerCount;
+    int DeveloperCount;
+    bool isError;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NamesOfDesignOrgs = UserService.GetNamesOfDesignOrgs();
+        DevelopersNames = UserService.GetDeveloperNames();
+        DesignerCount = NamesOfDesignOrgs.Count() + 1;
+        DeveloperCount = DevelopersNames.Count() + 1;
+    }
+
+    private void DesignerChange(ChangeEventArgs e)
+    {
+        designer = UserService.FindDesignerByName(e.Value.ToString());
+    }
+
+    private void DeveloperChange(ChangeEventArgs e)
+    {
+        developer = UserService.FindDeveloperByName(e.Value.ToString());
+    }
+
+    private void CreateProject()
+    {
+        if(Customer is not null && designer is not null && developer is not null && Customer.Departament is not null)
+        {
+            ProjectService.AddProjectToDB(new Project(Customer.Departament, 
+                Customer, designer, developer, ProjectService.GetLastNumberOfProject(), 
+                CopyDocuments(ProjectService.GetTemplateFiles(Customer.Departament))));
+
+            isError = false;
+        }
+        else
+        {
+            isError = true;
+        }    
+    }
+
+    private List<Document> CopyDocuments(List<Document> documents)
+    {
+        var docs = new List<Document>();
+
+        foreach(var doc in  documents)
+        {
+            var document = new Document(doc.NameOfDocument, doc.DocumentRole, ProjectService.GetLastNumberOfDocument());
+            ProjectService.AddDocumentToDB(document);
+            docs.Add(document);
+        }
+
+        return docs;
+    }
+}

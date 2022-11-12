@@ -1,0 +1,46 @@
+@using WorkingWithDocumentation.Data
+@inject ProjectService ProjectService
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+@if(!projectIsCreating)
+{
+    <select size="@numbersOfProjects.Count()" @onchange=GoToProject>
+        @foreach (var number in numbersOfProjects)
+        {
+            <option value="@number">@number</option>
+        }
+    </select>
+    <br />
+    <button name="createButton" @onclick=CreateProject>Создать проект</button>
+}
+else
+{
+    <CreateProjectComponent Customer="@UserService.CurrentCustomer" />
+}
+
+
+@code
+{
+    [Parameter]
+    public Customer Customer { get; set; }
+    List<int> numbersOfProjects = new List<int>();
+    bool projectIsCreating;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        numbersOfProjects = ProjectService.GetListOfNumberProjects(Customer);
+    }
+
+    private void CreateProject()
+    {
+        projectIsCreating = true;
+    }
+
+    private void GoToProject(ChangeEventArgs e)
+    {
+        ProjectService.NumberOfCurrentProject = int.Parse(e.Value.ToString());
+        Navigation.NavigateTo("/documents");
+    } 
+}

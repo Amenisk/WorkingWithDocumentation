@@ -7,8 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Pages\CustomerProjectComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Pages\CustomerProjectComponent.razor~RF5e43eac0.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.18.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\CustomerProjectComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\CustomerProjectComponent.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Shared\CustomerProjectComponent.razor" />
   </ItemGroup>
 
 </Project>

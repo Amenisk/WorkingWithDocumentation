@@ -1,0 +1,48 @@
+﻿@page "/createtemplate"
+@inject ProjectService ProjectService
+
+<p>Тип проекта</p>
+<select name="departament" @onchange=OnChange>
+    <option value=""></option>
+    <option value="Водоснабжение">Водоснабжение</option>
+    <option value="Газификация">Газификация</option>
+</select>
+
+<p>Название документа</p>
+<textarea @bind="nameOfDoc" cols="40" rows="5"/><br />
+<select name="roleDocument" @onchange=OnChangeRole>
+    <option value=""></option>
+    <option value="designer">Проектировщик</option>
+    <option value="developer">Застройщик</option>
+</select><br />
+<p>Роль документа: @role</p>
+<button @onclick=SaveDocument>Сохранить документ</button>
+<button @onclick=SaveProject>Сохранить шаблон проекта</button>
+
+@code {
+    string nameOfDoc = "";
+    string role = "";
+    Project project;
+    Document document;
+
+    private void OnChange(ChangeEventArgs e)
+    {
+        project = new Project(e.Value.ToString(), null, null, null, -1, new List<Document>());
+    }
+
+    private void OnChangeRole(ChangeEventArgs e)
+    {
+        role = e.Value.ToString();
+    }
+
+    private void SaveDocument()
+    {
+        project.AddDocument(new Document(nameOfDoc, role, -1));
+        nameOfDoc = "";
+    }
+
+    private void SaveProject()
+    {
+        ProjectService.SaveProjectTemplate(project);
+    }
+}

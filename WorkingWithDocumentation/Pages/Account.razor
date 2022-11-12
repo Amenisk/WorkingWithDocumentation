@@ -1,5 +1,39 @@
 ﻿@page "/account"
-@using WorkingWithDocumentation.Data
+@inject NavigationManager Navigation
 @inject UserService UserService
 
-<CustomerAccComponent Customer="@UserService.CurrentCustomer"/>
+
+@if(UserService.CurrentCustomer != null)
+{
+    <CustomerAccComponent Customer="@UserService.CurrentCustomer" />
+}
+
+@if (UserService.CurrentDesigner != null)
+{
+    <DesignerAccComponent Designer="@UserService.CurrentDesigner" />
+}
+
+@if (UserService.CurrentDeveloper != null)
+{
+    <DeveloperAccComponent Developer="@UserService.CurrentDeveloper" />
+}
+
+@if(!UserService.IsAuthorized())
+{
+    <div class="modal-body">
+        <h5>Авторизируйтесь</h5>
+        <p>Чтобы зайти в свой аккаунт, нужно сначала авторизироваться</p>
+        <p><a href="/authorization" role="button" class="btn btn-secondary popover-test" title="">Перейти к авторизации</a></p>
+    </div>
+}
+
+@code
+{
+    private void GoToAutho()
+    {
+        Navigation.NavigateTo("/authorization");
+    }
+}
+
+
+

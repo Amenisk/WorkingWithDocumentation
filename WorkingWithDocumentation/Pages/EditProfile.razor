@@ -1,0 +1,19 @@
+﻿@page "/editprofile"
+@inject UserService UserService
+
+@if (UserService.CurrentCustomer != null)
+{
+    <ChangeCustomerComponent Customer="@UserService.CurrentCustomer" />
+}
+
+@if (UserService.CurrentDesigner != null)
+{
+    <ChangeDesignerComponent Designer="@UserService.CurrentDesigner" />
+}
+
+@if (UserService.CurrentDeveloper != null)
+{
+    <ChangeDeveloperComponent Developer="@UserService.CurrentDeveloper" />
+}
+
+

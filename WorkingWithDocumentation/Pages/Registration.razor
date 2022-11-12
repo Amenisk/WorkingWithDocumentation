@@ -1,40 +1,52 @@
 ﻿@page "/registration"
-@using WorkingWithDocumentation.Data
-@using System;
 @inject UserService UserService
 
+
+@if(!UserService.IsAuthorized())
+{
     <h3>Регистрация</h3>
 
-<div>
-    <label>Выберите роль</label>
-    <select name="role" @onchange="OnChange">
-        <option value="customer">Заказчик</option>
-        <option value="designer">Проектировщик</option>
-        <option value="developer">Застройщик</option>
-    </select>
-    <br /><br />
-    <label>Введите почту</label>
-    <input type="email" @bind-value="reg_email" placeholder="Введите почту" required>
-    <br /><br />
-    <label>Введите логин</label>
-    <input @bind-value="reg_login" placeholder="Введите логин" required>
-    <br /><br />
-    <label>Введите пароль</label>
-    <input @bind-value="reg_pass" placeholder="Введите пароль" required>
-    <br /><br />
-    <label>Повторите пароль</label>
-    <input @bind-value="reg_pass2" placeholder="Повторите пароль" required>
-    <br /><br />
-    <button name="regButton" @onclick=Register>Зарегистрироваться</button>
-    <br /><br />
-</div>
+    <div>
+        <label>Выберите роль</label>
+        <select name="role" @onchange="OnChange">
+            <option value=""></option>
+            <option value="customer">Заказчик</option>
+            <option value="designer">Проектировщик</option>
+            <option value="developer">Застройщик</option>
+        </select>
+        <br /><br />
+        <label>Введите почту</label>
+        <input type="email" @bind-value="reg_email" placeholder="Введите почту" required>
+        <br /><br />
+        <label>Введите логин</label>
+        <input @bind-value="reg_login" placeholder="Введите логин" required>
+        <br /><br />
+        <label>Введите пароль</label>
+        <input @bind-value="reg_pass" placeholder="Введите пароль" required>
+        <br /><br />
+        <label>Повторите пароль</label>
+        <input @bind-value="reg_pass2" placeholder="Повторите пароль" required>
+        <br /><br />
+        <button name="regButton" @onclick=Register>Зарегистрироваться</button>
+        <br /><br />
+    </div>
 
-@if (isError)
+    @if (isError)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+}
+else
 {
-    <div class="alert alert-danger" role="alert">
-        @errorMessage
+    <div class="modal-body">
+        <h5>Выйдите с аккаунта</h5>
+        <p>Чтобы зарегистрировать новый аккаунт, нужно сначала выйти со своего аккаунта</p>
+        <p><button class="btn btn-secondary popover-test" @onclick=UserService.LogOut>Выйти с аккаунта</button></p>
     </div>
 }
+
 
 
 @code {
@@ -42,13 +54,13 @@
     string reg_login = "";
     string reg_pass = "";
     string reg_pass2 = "";
-    string reg_role = "customer";
+    string reg_role = "";
     bool isError = false;
     string errorMessage = "";
 
     private void Register()
     {
-        if(reg_email != null && reg_login != null && reg_pass != null && reg_pass2 != null)
+        if(reg_email != null && reg_login != null && reg_pass != null && reg_pass2 != null && reg_role != "")
         {
             if(reg_pass == reg_pass2)
             {
@@ -75,13 +87,13 @@
             }
             else
             {
-                errorMessage = "Password dont match!";
+                errorMessage = "Пароли не сходятся!";
                 isError = true;
             }
         }
         else
         {
-            errorMessage = "Not all fields are filled!";
+            errorMessage = "Не все поля заполнены!";
             isError = true;
         }
     }

@@ -121,5 +121,55 @@ namespace WorkingWithDocumentation.Data
                 CurrentDeveloper = developer;
             }    
         }
+        public bool IsAuthorized()
+        {
+            return CurrentCustomer is not null 
+                || CurrentDesigner is not null 
+                || CurrentDeveloper is not null;
+        }
+        public void LogOut()
+        {
+            CurrentCustomer = null;
+            CurrentDesigner = null;
+            CurrentDeveloper = null;
+            LoginOfCurrentUser = null;
+        }
+
+        public List<string> GetNamesOfDesignOrgs()
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Designer>("Designers");
+            List<string> names = collection.Find(x => x.NameOfDesignOrg != null).ToList().Select(x => x.NameOfDesignOrg).ToList<string>();
+
+            return names;
+        }
+
+        public List<string> GetDeveloperNames()
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Developer>("Developers");
+            List<string> names = collection.Find(x => x.DeveloperName != null).ToList().Select(x => x.DeveloperName).ToList<string>();
+
+            return names;
+        }
+
+        public Designer FindDesignerByName(string nameOfOrg)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Designer>("Designers");
+
+            return collection.Find(x => x.NameOfDesignOrg == nameOfOrg).FirstOrDefault();
+        }
+        public Developer FindDeveloperByName(string developerName)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Developer>("Developers");
+
+            return collection.Find(x => x.DeveloperName == developerName).FirstOrDefault();
+        }
     }
 }
