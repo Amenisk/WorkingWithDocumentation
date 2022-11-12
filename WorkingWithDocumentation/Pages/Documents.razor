@@ -1,6 +1,7 @@
 ﻿@page "/documents"
 @inject UserService UserService
 @inject ProjectService ProjectService
+@inject NavigationManager Navigation
 
 
 @if(project is not null)
@@ -18,7 +19,8 @@
         <tbody>
             @foreach(var doc in project.Documents)
             {
-                <tr>
+                CheckColor(doc.NumberOfDocument);
+                <tr style="background-color: @color">
                     <td>@doc.NumberOfDocument</td>
                     <td>@doc.NameOfDocument</td>
                     @if(doc.IsImportant)
@@ -27,7 +29,7 @@
                     } 
                     else
                     {
-                        <td><input name="isImportant" type="checkbox" checked="checked" @onclick="() => IsImportant(doc)"/></td>
+                        <td><input name="isImportant" type="checkbox" @onclick="() => IsImportant(doc)"/></td>
                     }
 
                     @if(doc.IsApproved)
@@ -39,17 +41,18 @@
                         <td><input name="isApproved" type="checkbox" @onclick="() => IsApproved(doc)" /></td>
                     }
                     
-                    <td><button>Скачать</button></td>
+                    <td><button @onclick="() => ProjectService.DownloadToLocal(doc.NumberOfDocument.ToString())">Скачать</button></td>
                 </tr>
             }
         </tbody>
-    </table>
+    </table><br />
+    <button type="button" class="btn btn-outline-primary" @onclick=Return>Вернуться к списку проектов</button>
 }
 
 @code
 {
     Project project;
-    string check;
+    string color;
 
     protected override void OnInitialized()
     {
@@ -60,12 +63,31 @@
     private void IsImportant(Document doc)
     {
         doc.IsImportant = !doc.IsImportant;
-        ProjectService.UpdateDocumentBoolByNumber(doc);
+        ProjectService.UpdateDocumentBoolByNumber(doc, project.NumberOfProject);
     }
 
     private void IsApproved(Document doc)
     {
         doc.IsApproved = !doc.IsApproved;
-        ProjectService.UpdateDocumentBoolByNumber(doc);      
+        ProjectService.UpdateDocumentBoolByNumber(doc, project.NumberOfProject);
+    }
+
+    private void Return()
+    {
+        Navigation.NavigateTo("/projects");
+    }
+
+    private void CheckColor(int number)
+    {
+        var doc = ProjectService.GetDocumentFromDBByNumber(number);
+
+        if (doc.IsApproved)
+            color = "green";
+        else if (ProjectService.CheckLoadDocumentByNumber(number))
+            color = "yellow";
+        else if (doc.IsImportant)
+            color = "red";
+        else
+            color = "";
     }
 }

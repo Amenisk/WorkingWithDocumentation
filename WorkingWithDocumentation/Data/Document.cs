@@ -11,11 +11,7 @@ namespace WorkingWithDocumentation.Data
         public int NumberOfDocument { get; set; }
         public string DocumentRole { get; set; }
         public string NameOfDocument { get; set; }
-        [BsonIgnoreIfDefault]
-        public string? FileName { get; set; }
-        [BsonIgnoreIfDefault]
         public bool IsImportant { get; set; }
-        [BsonIgnoreIfDefault]
         public bool IsApproved { get; set; }
 
         public Document(string nameOfDocument, string documentRole, int lastNumber)

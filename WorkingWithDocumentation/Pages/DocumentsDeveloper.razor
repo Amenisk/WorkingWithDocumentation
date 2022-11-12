@@ -1,0 +1,85 @@
+﻿@page "/documentsdev"
+@inject UserService UserService
+@inject ProjectService ProjectService
+@inject NavigationManager Navigation
+
+
+@if(project is not null)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">№ документа</th>
+                <th scope="col">Наименование документа</th>
+                <th scope="col">Загрузить</th>
+                <th scope="col">Удалить</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var doc in project.Documents)
+            {
+                if(doc.DocumentRole == "developer")
+                {
+                    CheckColor(doc.NumberOfDocument);
+                    <tr style="background-color: @color">
+                        <td>@doc.NumberOfDocument</td>
+                        <td>@doc.NameOfDocument</td>
+                        <td><InputFile OnChange="@LoadFileAsync" @onclick="() => SaveNumber(doc.NumberOfDocument)" /></td>
+                        <td><button>Удалить</button></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table><br />
+    <button type="button" class="btn btn-outline-primary" @onclick=Return>Вернуться к списку проектов</button>
+}
+
+@code
+{
+    Project project;
+    int numberOfDocument;
+    string color;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        project = ProjectService.GetProjectFromDBByNumber(ProjectService.NumberOfCurrentProject);
+    }
+
+    private void Return()
+    {
+        Navigation.NavigateTo("/projects");
+    }
+
+    private async Task LoadFileAsync(InputFileChangeEventArgs e)
+    {
+        Stream stream = e.File.OpenReadStream();
+        await ProjectService.UploadDocumentToDbAsync(stream, ReturnNewName(e.File.Name, numberOfDocument);
+        stream.Dispose();
+    }
+
+    private void SaveNumber(int number)
+    {
+        numberOfDocument = number;
+    }
+
+    private void CheckColor(int number)
+    {
+        var doc = ProjectService.GetDocumentFromDBByNumber(number);
+
+        if (doc.IsApproved) 
+            color = "green";
+        else if (ProjectService.CheckLoadDocumentByNumber(number)) 
+            color = "yellow";
+        else if (doc.IsImportant)
+            color = "red";
+        else
+            color = "";
+    }
+
+    private string ReturnNewName(string name, int number)
+    {
+        string[] partsName = name.Split(.);
+        return number.ToString() + "." + partsName[partsName.Length - 1]
+    }
+}

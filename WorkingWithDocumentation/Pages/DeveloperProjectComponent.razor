@@ -1,2 +1,51 @@
 @inject NavigationManager Navigation
 @inject UserService UserService
+@inject ProjectService ProjectService
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">№ проекта</th>
+            <th scope="col">Заказчик</th>
+            <th scope="col">Проектировщик</th>
+            <th scope="col">Открыть проект</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var number in numbersOfProjects)
+        {
+            <tr>
+                <td>@number</td>
+                <td>@ProjectService.GetProjectFromDBByNumber(number).RespCustomer.FullName</td>
+                <td>@ProjectService.GetProjectFromDBByNumber(number).RespDesigner.NameOfDesignOrg</td>
+                <td><button class="btn btn-primary" @onclick="() => GoToProject(number)">Открыть</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+
+@code
+{
+    [Parameter]
+    public Developer Developer { get; set; }
+    List<int> numbersOfProjects = new List<int>();
+    bool projectIsCreating;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        numbersOfProjects = ProjectService.GetListOfNumberProjectsByDeveloper(Developer.Login);
+    }
+
+    private void CreateProject()
+    {
+        projectIsCreating = true;
+    }
+
+    private void GoToProject(int number)
+    {
+        ProjectService.NumberOfCurrentProject = number;
+        Navigation.NavigateTo("/documentsdev");
+    }
+}

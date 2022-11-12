@@ -1,5 +1,6 @@
 @inject ProjectService ProjectService
 @inject UserService UserService
+@inject NavigationManager Navigation
 
 <div class="row">
     <div class="col-sm-6">
@@ -30,7 +31,7 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-primary" @onclick=CreateProject>Создать проект</button>
+    <button class="btn btn-primary" weight="350px" @onclick=CreateProject>Создать проект</button>
 </div>
 
 @if(isError)
@@ -81,6 +82,8 @@
                 CopyDocuments(ProjectService.GetTemplateFiles(Customer.Departament))));
 
             isError = false;
+            Navigation.NavigateTo("/projects", true);
+
         }
         else
         {

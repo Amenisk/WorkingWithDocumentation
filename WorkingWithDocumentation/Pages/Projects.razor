@@ -7,6 +7,11 @@
     {
         <CustomerProjectComponent Customer="@UserService.CurrentCustomer" />
     }
+
+    if(UserService.CurrentDeveloper is not null)
+    {
+        <DeveloperProjectComponent Developer="@UserService.CurrentDeveloper" />
+    }
 }
 else
 {

@@ -8,8 +8,7 @@
 
     <div>
         <label>Выберите роль</label>
-        <select name="role" @onchange="OnChange">
-            <option value=""></option>
+        <select name="role" @bind="auth_role">
             <option value="customer">Заказчик</option>
             <option value="designer">Проектировщик</option>
             <option value="developer">Застройщик</option>
@@ -94,6 +93,4 @@ else
     {
         Navigation.NavigateTo("/registration");
     }
-
-    private void OnChange(ChangeEventArgs e) => auth_role = e.Value.ToString();
 }
