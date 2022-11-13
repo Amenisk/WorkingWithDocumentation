@@ -12,6 +12,11 @@
     {
         <DeveloperProjectComponent Developer="@UserService.CurrentDeveloper" />
     }
+
+    if (UserService.CurrentDesigner is not null)
+    {
+        <DesignerProjectComponent Designer="@UserService.CurrentDesigner" />
+    }
 }
 else
 {

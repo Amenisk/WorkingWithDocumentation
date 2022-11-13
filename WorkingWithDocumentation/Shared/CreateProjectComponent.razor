@@ -7,11 +7,11 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Назначьте дизайнера</h3>
-                <select size="@DesignerCount" @onchange=DesignerChange>
+                <select size="@DesignerCount" @onchange=DesignerChange style="width: 60%">
                     <option value=null disabled></option>
                     @foreach (var name in NamesOfDesignOrgs)
                     {
-                        <option value=@name>@name</option>
+                        <option value=@name style="font-size:large">@name</option>
                     }
                 </select>
             </div>
@@ -21,7 +21,7 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Назначьте застройщика</h3>
-                <select size="@DeveloperCount" @onchange=DeveloperChange>
+                <select size="@DeveloperCount" @onchange=DeveloperChange style="width: 60%">
                     <option value=null disabled></option>
                     @foreach (var name in DevelopersNames)
                     {
@@ -31,8 +31,8 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-primary" weight="350px" @onclick=CreateProject>Создать проект</button>
 </div>
+<button class="btn btn-primary" weight="350px" @onclick=CreateProject style="width: 50%; margin-left: 25%; margin-top: 100px">Создать проект</button>
 
 @if(isError)
 {

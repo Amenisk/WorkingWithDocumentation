@@ -4,25 +4,35 @@
 
 @if(!UserService.IsAuthorized())
 {
-    <h3>Авторизация</h3>
+    <div class="card" style="width: 50%; margin: 100px 25% 0 25%">
+        <div class="card-header">
+            <h3 style="margin-left: 35%">Авторизация</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Выберите роль</label>
+                <select name="role" @bind="auth_role">
+                    <option value="customer">Заказчик</option>
+                    <option value="designer">Проектировщик</option>
+                    <option value="developer">Застройщик</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <br>
+                <label>Введите логин</label>
+                <input @bind-value="auth_login" class="form-control" placeholder="Введите логин" required>
+            </div>
+            <div class="form-group">
+                <br>
+                <label>Введите пароль</label>
+                <input type="password" @bind-value="auth_pass" class="form-control" placeholder="Введите пароль" required>
+            </div>
 
-    <div>
-        <label>Выберите роль</label>
-        <select name="role" @bind="auth_role">
-            <option value="customer">Заказчик</option>
-            <option value="designer">Проектировщик</option>
-            <option value="developer">Застройщик</option>
-        </select>
-        <br /><br />
-        <label>Введите логин</label>
-        <input @bind-value="auth_login" placeholder="Введите логин">
-        <br /><br />
-        <label>Введите пароль</label>
-        <input type="password" @bind-value="auth_pass" placeholder="Введите пароль">
-        <br /><br />
-        <button @onclick=Autorization name="authButton">Войти</button>
-        <button @onclick=Registration name="authButton">Регистрация</button>
-        <br /><br />
+            <div class="form-group">
+                <button @onclick=Autorization class="btn btn-primary" style="margin: 10px 5% 0 28%">Войти</button>
+                <button @onclick=Registration class="btn btn-primary" style="margin: 10px 28% 0 5%">Регистрация</button>
+            </div>
+        </div>
     </div>
 
     @if (isError)
@@ -51,7 +61,7 @@ else
 
     private void Autorization()
     {
-        if(auth_login != "" && auth_pass != "" && auth_role != "")
+        if (auth_login != "" && auth_pass != "" && auth_role is not null)
         {
             switch (auth_role)
             {

@@ -7,6 +7,10 @@
         public string EstimatedCostOfWork { get; set; }
         public string TermForDevelopment { get; set; }
 
+        public GasSupplyForm()
+        {
+
+        }
         public GasSupplyForm(string diameterOfPipelineAndLengthOfObject1,
             string diameterOfPipelineAndLengthOfObject2,
             string estimatedCostOfWork, string termForDevelopment)
@@ -15,6 +19,12 @@
             DiameterOfPipelineAndLengthOfObject2 = diameterOfPipelineAndLengthOfObject2;
             EstimatedCostOfWork = estimatedCostOfWork;
             TermForDevelopment = termForDevelopment;
+        }
+
+        public GasSupplyForm Clone()
+        {
+            return new GasSupplyForm(DiameterOfPipelineAndLengthOfObject1, 
+                DiameterOfPipelineAndLengthOfObject2, EstimatedCostOfWork, TermForDevelopment);
         }
     }
 }

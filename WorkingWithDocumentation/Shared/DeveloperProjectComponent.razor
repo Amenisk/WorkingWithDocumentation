@@ -35,7 +35,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        numbersOfProjects = ProjectService.GetListOfNumberProjectsByDeveloper(Developer.Login);
+        numbersOfProjects = ProjectService.GetListOfNumberProjectsByUser(Developer.Login, Developer.Role);
     }
 
     private void CreateProject()

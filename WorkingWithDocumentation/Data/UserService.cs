@@ -171,5 +171,19 @@ namespace WorkingWithDocumentation.Data
 
             return collection.Find(x => x.DeveloperName == developerName).FirstOrDefault();
         }
+
+        public bool CheckLogin(string login)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection1 = database.GetCollection<Customer>("Customers");
+            var collection2 = database.GetCollection<Designer>("Designers");
+            var collection3 = database.GetCollection<Developer>("Developers");
+            var customer = collection1.Find(x => x.Login == login).FirstOrDefault();
+            var designer = collection2.Find(x => x.Login == login).FirstOrDefault();
+            var developer = collection3.Find(x => x.Login == login).FirstOrDefault();
+
+            return customer is not null || designer is not null || developer is not null;
+        }
     }
 }

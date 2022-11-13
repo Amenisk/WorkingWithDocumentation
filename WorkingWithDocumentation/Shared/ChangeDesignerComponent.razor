@@ -1,56 +1,82 @@
 @inject NavigationManager Navigation
 @inject UserService UserService
 
-<h3>Редактировать профиль</h3>
+<div class="card" style="width: 70%; margin: 100px 15% 0 15%">
+    <div class="card-header">
+        <h3 style="margin-left: 30%">Редактировать профиль</h3>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Введите пароль </td>
+                    <td><input @bind-value="_designer.Password" placeholder="Введите пароль" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Введите почту </td>
+                    <td><input type="email" @bind-value="_designer.Email" placeholder="Введите почту" style="width: 100%" required>
+                        <small class="form-text text-muted">Почта должна содержать знак &#64;</small></td>
+                </tr>
+                <tr>
+                    <td>Введите телефон </td>
+                    <td><input type="tel" @bind-value="_designer.Telephone" placeholder="Введите телефон" style="width: 100%" required>
+                    <small class="form-text text-muted">Номер телефона состоит только из 11 цифр</small></td>
+                </tr>
+                <tr>
+                    <td>Введите название проектной организации </td>
+                    <td><input @bind-value="_designer.NameOfDesignOrg" placeholder="Введите название" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Введите ОГРН </td>
+                    <td><input @bind-value="_designer.PSRN" placeholder="Введите ОГРН" style="width: 100%" required>
+                    <small class="form-text text-muted">ОГРН состоит из 13 цифр</small></td>
+                </tr>
+                <tr>
+                    <td>Введите ИНН </td>
+                    <td><input @bind-value="_designer.ITN" placeholder="Введите ИНН" style="width: 100%" required>
+                        <small class="form-text text-muted">ИНН состоит из 9 цифр</small></td>
+                </tr>
+                <tr>
+                    <td>Введите КПП </td>
+                    <td><input @bind-value="_designer.KPP" placeholder="Введите КПП" style="width: 100%" required>
+                    <small class="form-text text-muted">КПП состоит из 10 цифр</small></td>
+                </tr>
+                <tr>
+                    <td>Введите адрес </td>
+                    <td><input @bind-value="_designer.Address" placeholder="Введите адрес" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Введите ФИО директора </td>
+                    <td><input @bind-value="_designer.DirectorFN" placeholder="Введите ФИО" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Введите ФИО ГИП </td>
+                    <td><input @bind-value="_designer.ChiefProjectEngineerFN" placeholder="Введите ФИО" style="width: 100%" required></td>
+                </tr>
+            </tbody>
+        </table>
 
-<label>Введите пароль</label>
-<input @bind-value="_designer.Password" placeholder="Введите пароль" required>
-<br />
-<br />
-<label>Введите почту</label>
-<input type="email" @bind-value="_designer.Email" placeholder="Введите почту" required>
-<br />
-<br />
-<label>Введите телефон</label>
-<input type="tel" @bind-value="_designer.Telephone" placeholder="Введите телефон" required>
-<br />
-<br />
-<label>Введите название проектной организации</label>
-<input @bind-value="_designer.NameOfDesignOrg" placeholder="Введите название" required>
-<br />
-<br />
-<label>Введите ОГРН</label>
-<input @bind-value="_designer.PSRN" placeholder="Введите ОГРН" required>
-<br />
-<br />
-<label>Введите ИНН</label>
-<input @bind-value="_designer.ITN" placeholder="Введите ИНН" required>
-<br />
-<br />
-<label>Введите КПП</label>
-<input @bind-value="_designer.KPP" placeholder="Введите КПП" required>
-<br />
-<br />
-<label>Введите адрес</label>
-<input @bind-value="_designer.Address" placeholder="Введите адрес" required>
-<br />
-<br />
-<label>Введите ФИО директора</label>
-<input @bind-value="_designer.DirectorFN" placeholder="Введите ФИО" required>
-<br />
-<br />
-<label>Введите ФИО ГИП</label>
-<input @bind-value="_designer.ChiefProjectEngineerFN" placeholder="Введите ФИО" required>
-<br />
-<br />
-<button name="saveButton" @onclick=Save>Сохранить</button>
-<button name="navigateButton" @onclick=Return>Вернуться в профиль</button>
+        <div class="form-group">
+            <button name="saveButton" @onclick=Save class="btn btn-primary"style="margin: 10px 5% 0 20%">Сохранить</button>
+            <button name="navigateButton" @onclick=Return class="btn btn-primary" style="margin: 10px 20% 0 5%">Вернуться в профиль</button>
+        </div>
+    </div>
+</div>
+
+
+@if (isError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>Данные заполнены некорректно.Следуйте подсказкам, расположенных под полями записи</p>
+    </div>
+}
 
 @code {
     [Parameter]
     public Designer Designer { get; set; }
 
     private Designer _designer;
+    bool isError;
 
     protected override void OnInitialized()
     {
@@ -59,11 +85,49 @@
 
     private void Save()
     {
-        UserService.ReplaceDesigner(_designer);
+        if(CheckEmail(_designer.Email) && CheckTel(_designer.Telephone) 
+        && CheckPSRN(_designer.PSRN) && CheckITN(_designer.ITN) && CheckKPP(_designer.KPP))
+        {
+            UserService.ReplaceDesigner(_designer);
+            isError = false;
+        }
+        else
+        {
+            isError = true;
+        }
     }
 
     private void Return()
     {
         Navigation.NavigateTo("/account");
+    }
+
+    private bool CheckEmail(string email)
+    {
+        return email.Contains('@');
+    }
+
+    private bool CheckTel(string number)
+    {
+        Int64 num;
+        return Int64.TryParse(number, out num) && number.Length == 11;
+    }
+
+    private bool CheckPSRN(string psrn)
+    {
+        Int64 num;
+        return Int64.TryParse(psrn, out num) && psrn.Length == 13;
+    }
+
+    private bool CheckITN(string itn)
+    {
+        Int64 num;
+        return Int64.TryParse(itn, out num) && itn.Length == 9;
+    }
+
+    private bool CheckKPP(string kpp)
+    {
+        Int64 num;
+        return Int64.TryParse(kpp, out num) && kpp.Length == 10;
     }
 }

@@ -9,6 +9,8 @@ namespace WorkingWithDocumentation.Data
         public ObjectId Id { get; set; }
         [BsonIgnoreIfDefault]
         public int NumberOfDocument { get; set; }
+        [BsonIgnoreIfDefault]
+        public string FileName { get; set; }
         public string DocumentRole { get; set; }
         public string NameOfDocument { get; set; }
         public bool IsImportant { get; set; }

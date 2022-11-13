@@ -4,20 +4,58 @@
 
 @if(Designer is not null)
 {
-    <h3>Профиль</h3>
+    <div class="card" style="width: 50%; margin: 100px 25% 0 25%">
+        <div class="card-header">
+            <h3 style="margin-left: 35%">Профиль</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Наименование проектной организации: </td>
+                        <td>@Designer.NameOfDesignOrg</td>
+                    </tr>
+                    <tr>
+                        <td>ОГРН: </td>
+                        <td>@Designer.PSRN</td>
+                    </tr>
+                    <tr>
+                        <td>ИНН: </td>
+                        <td>@Designer.ITN</td>
+                    </tr>
+                    <tr>
+                        <td>КПП: </td>
+                        <td>@Designer.KPP</td>
+                    </tr>
+                    <tr>
+                        <td>Адрес: </td>
+                        <td>@Designer.Address</td>
+                    </tr>
+                    <tr>
+                        <td>E-mail: </td>
+                        <td>@Designer.Email</td>
+                    </tr>
+                    <tr>
+                        <td>Телефон: </td>
+                        <td>@Designer.Telephone</td>
+                    </tr>
+                    <tr>
+                        <td>Директор: </td>
+                        <td>@Designer.DirectorFN</td>
+                    </tr>
+                    <tr>
+                        <td>ГИП: </td>
+                        <td>@Designer.ChiefProjectEngineerFN</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <p>Наименование проектной организации: @Designer.NameOfDesignOrg</p>
-    <p>ОГРН: @Designer.PSRN</p>
-    <p>ИНН: @Designer.ITN</p>
-    <p>КПП: @Designer.KPP</p>
-    <p>Адрес: @Designer.Address</p>
-    <p>E-mail: @Designer.Email</p>
-    <p>Телефон: @Designer.Telephone</p>
-    <p>Директор: @Designer.DirectorFN</p>
-    <p>ГИП: @Designer.ChiefProjectEngineerFN</p>
-
-    <button name="navigateButton" @onclick=EditProfile>Редактировать профиль</button>
-    <button name="exitButton" @onclick=LogOut>Выйти</button>
+            <div class="form-group">
+                <button name="navigateButton" @onclick=EditProfile class="btn btn-primary" style="margin: 10px 5% 0 20%">Редактировать профиль</button>
+                <button name="exitButton" @onclick=LogOut class="btn btn-primary" style="margin: 10px 20% 0 5%">Выйти</button>
+            </div>
+        </div>
+    </div>
 }
 
 @code {

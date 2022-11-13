@@ -1,0 +1,13 @@
+﻿@page "/documentsdes"
+@inject NavigationManager Navigation
+
+<DocumentsComponent Role="designer"></DocumentsComponent>
+<button type="button" class="btn btn-outline-primary" @onclick=FillForm>Заполнить форму</button>
+
+@code
+{
+    private void FillForm()
+    {
+        Navigation.NavigateTo("/formcontainer");
+    }
+}

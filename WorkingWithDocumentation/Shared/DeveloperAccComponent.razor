@@ -3,19 +3,54 @@
 
 @if(Developer is not null)
 {
-    <h3>Профиль</h3>
+    <div class="card" style="width: 70%; margin: 100px 15% 0 15%">
+        <div class="card-header">
+            <h3 style="margin-left: 35%">Профиль</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Застройщик: </td>
+                        <td>@Developer.DeveloperName</td>
+                    </tr>
+                    <tr>
+                        <td>ОГРН: </td>
+                        <td>@Developer.PSRN</td>
+                    </tr>
+                    <tr>
+                        <td>ИНН: </td>
+                        <td>@Developer.ITN</td>
+                    </tr>
+                    <tr>
+                        <td>КПП: </td>
+                        <td>@Developer.KPP</td>
+                    </tr>
+                    <tr>
+                        <td>Адрес: </td>
+                        <td>@Developer.Address</td>
+                    </tr>
+                    <tr>
+                        <td>E-mail: </td>
+                        <td>@Developer.Email</td>
+                    </tr>
+                    <tr>
+                        <td>Телефон: </td>
+                        <td>@Developer.Telephone</td>
+                    </tr>
+                    <tr>
+                        <td>Руководитель Исполнительного комитета РТ: </td>
+                        <td>@Developer.HeadOfExecutiveCommitteeRTFN</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <p>Застройщик: @Developer.DeveloperName</p>
-    <p>ОГРН: @Developer.PSRN</p>
-    <p>ИНН: @Developer.ITN</p>
-    <p>КПП: @Developer.KPP</p>
-    <p>Адрес: @Developer.Address</p>
-    <p>E-mail: @Developer.Email</p>
-    <p>Телефон: @Developer.Telephone</p>
-    <p>Руководитель Исполнительного комитета РТ: @Developer.HeadOfExecutiveCommitteeRTFN</p>
-
-    <button name="navigateButton" @onclick=EditProfile>Редактировать профиль</button>
-    <button name="exitButton" @onclick=LogOut>Выйти</button>
+            <div class="form-group">
+                <button name="navigateButton" @onclick=EditProfile class="btn btn-primary" style="margin: 10px 5% 0 20%">Редактировать профиль</button>
+                <button name="exitButton" @onclick=LogOut class="btn btn-primary" style="margin: 10px 20% 0 5%">Выйти</button>
+            </div>
+        </div>
+    </div>
 }
 
 @code {

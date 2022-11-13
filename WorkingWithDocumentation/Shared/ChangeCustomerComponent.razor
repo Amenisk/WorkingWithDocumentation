@@ -1,35 +1,58 @@
 ﻿@inject NavigationManager Navigation
 @inject UserService UserService
 
-<h3>Редактировать профиль</h3>
+<div class="card" style="width: 70%; margin: 100px 15% 0 15%">
+    <div class="card-header">
+        <h3 style="margin-left: 35%">Профиль</h3>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>Введите пароль </td>
+                    <td><input @bind-value="_customer.Password" placeholder="Введите пароль" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Введите почту </td>
+                    <td><input type="email" @bind-value="_customer.Email" placeholder="Введите почту" style="width: 100%" required>
+                        <small class="form-text text-muted">Почта должна содержать знак &#64;</small>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Введите телефон</td>
+                    <td><input type="tel" @bind-value="_customer.Telephone" placeholder="Введите телефон" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Введите ФИО </td>
+                    <td><input @bind-value="_customer.FullName" placeholder="Введите ФИО" style="width: 100%" required></td>
+                </tr>
+                <tr>
+                    <td>Выберите отрасль </td>
+                    <td>
+                        <select name="departament" @bind="_customer.Departament">
+                            <option value="Водоснабжение">Водоснабжение</option>
+                            <option value="Газификация">Газификация</option>
+                        </select>
+                        Отрасль: @_customer.Departament
+                    </td>
 
-<label>Введите пароль</label>
-<input @bind-value="_customer.Password" placeholder="Введите пароль" required>
-<br/><br/>
-<label>Введите почту</label>
-<input type="email" @bind-value="_customer.Email" placeholder="Введите почту" required>
-<br/><br/>
-<label>Введите телефон</label>
-<input type="tel" @bind-value="_customer.Telephone" placeholder="Введите телефон" required>
-<br/><br/>
-<label>Введите ФИО</label>
-<input @bind-value="_customer.FullName" placeholder="Введите ФИО" required>
-<br/><br/>
+                </tr>
+            </tbody>
+        </table>
 
+        <div class="form-group">
+            <button name="saveButton" @onclick=Save class="btn btn-primary" style="margin: 10px 5% 0 25%">Сохранить</button>
+            <button name="navigateButton" @onclick=Return class="btn btn-primary" style="margin: 10px 25% 0 5%">Вернуться в профиль</button>
+        </div>
+    </div>
+</div>
 
-<label>Выберите отрасль</label>
-<select name="departament" @onchange="OnChange">
-    <option value=null></option>
-    <option value="Водоснабжение">Водоснабжение</option>
-    <option value="Газификация">Газификация</option>
-</select>
-
-<label>Отрасль: @_customer.Departament</label>
-
-<br />
-<br />
-<button name="saveButton" @onclick=Save>Сохранить</button>
-<button name="navigateButton" @onclick=Return>Вернуться в профиль</button>
+if (isError)
+{
+<div class="alert alert-danger" role="alert">
+    <p>Поле почты заполнено некорректно.Следуйте подсказкам, расположенных под полем</p>
+</div>
+}
 
 @code {
     [Parameter]
@@ -44,13 +67,25 @@
 
     private void Save()
     {
-        UserService.ReplaceCustomer(_customer);
+        if(CheckEmail(_customer.Email))
+        {
+            UserService.ReplaceCustomer(_customer);
+            isError = false;
+        }
+        else
+        {
+            isError = true;
+        }
+        
     }
-
-    private void OnChange(ChangeEventArgs e) => _customer.Departament = e.Value.ToString();
 
     private void Return()
     {
         Navigation.NavigateTo("/account");
+    }
+
+    private bool CheckEmail(string email)
+    {
+        return email.Contains('@');
     }
 }

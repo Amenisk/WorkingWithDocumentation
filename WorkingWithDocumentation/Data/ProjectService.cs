@@ -81,12 +81,18 @@ namespace WorkingWithDocumentation.Data
             return numbersOfProjects;
         }
 
-        public List<int> GetListOfNumberProjectsByDeveloper(string login)
+        public List<int> GetListOfNumberProjectsByUser(string login, string role)
         {
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("DocumentFlow");
             var collection = database.GetCollection<Project>("Projects");
-            var projects = collection.Find(x => x.RespDeveloper.Login == login).ToList<Project>();
+            List<Project> projects;
+            if (role == "designer")
+                projects = collection.Find(x => x.RespDesigner.Login == login).ToList<Project>();
+            else
+                projects = collection.Find(x => x.RespDeveloper.Login == login).ToList<Project>();
+
+
             List<int> numbersOfProjects = new List<int>();
 
             foreach (var pr in projects)
@@ -151,13 +157,13 @@ namespace WorkingWithDocumentation.Data
             await gridFS.UploadFromStreamAsync(name, fs);
         }
 
-        public bool CheckLoadDocumentByNumber(int number)
+        public bool CheckLoadDocumentByNumber(string name)
         {
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("DocumentFlow");
             var collection = database.GetCollection<GridFSFileInfo>("fs.files");
 
-            var info = collection.Find(x => x.Filename == number.ToString()).FirstOrDefault();
+            var info = collection.Find(x => x.Filename == name).FirstOrDefault();
 
             if (info is null)
                 return false;
@@ -165,15 +171,64 @@ namespace WorkingWithDocumentation.Data
                 return true;
         }
 
-        public void DownloadToLocal(string name)
+        public void DownloadToLocal(int number)
+        {            
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Document>("Documents");
+            var doc = collection.Find(x => x.NumberOfDocument == number).FirstOrDefault();
+            var gridFS = new GridFSBucket(database);
+            using (FileStream fs = new FileStream($"{Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/wwwroot/Docs/")}{doc.FileName}", FileMode.CreateNew))
+            {
+                gridFS.DownloadToStreamByName(doc.FileName, fs);
+            }
+        }
+
+        public void UpdateFileName(int numberOfDocument, string fileName)
         {
             var client = new MongoClient("mongodb://localhost");
             var database = client.GetDatabase("DocumentFlow");
-            var gridFS = new GridFSBucket(database);
-            using (FileStream fs = new FileStream($"{Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/wwwroot/Docs/")}{name}", FileMode.OpenOrCreate))
-            {
-                gridFS.DownloadToStreamByName(name, fs);
-            }
+            var collection = database.GetCollection<Document>("Documents");
+            var doc = collection.Find(x => x.NumberOfDocument == numberOfDocument).FirstOrDefault();
+            var filter = Builders<Document>.Filter.Eq("NumberOfDocument", doc.NumberOfDocument);
+            var update = Builders<Document>.Update.Set("FileName", fileName);
+
+            collection.UpdateOne(filter, update);
+        }
+
+        public void SaveWaterForm(WaterSupplyForm form, int numberOfProject)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Project>("Projects");
+            var filter = Builders<Project>.Filter.Eq("NumberOfProject", numberOfProject);
+            var update = Builders<Project>.Update.Set("WaterSupply", form);
+
+            collection.UpdateOne(filter, update);
+        }
+
+        public void SaveGasForm(GasSupplyForm form, int numberOfProject)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection = database.GetCollection<Project>("Projects");
+            var filter = Builders<Project>.Filter.Eq("NumberOfProject", numberOfProject);
+            var update = Builders<Project>.Update.Set("GasSupply", form);
+
+            collection.UpdateOne(filter, update);
+        }
+
+        public void DeleteDocument(int numberOfDocument)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("DocumentFlow");
+            var collection1 = database.GetCollection<GridFSFileInfo>("fs.files");
+            var collection2 = database.GetCollection<Document>("Documents");
+            var doc = collection2.Find(x => x.NumberOfDocument == numberOfDocument).FirstOrDefault();
+            doc.FileName = null;
+
+            collection1.DeleteOne(x => x.Filename == doc.FileName);
+            collection2.ReplaceOne(x => x.NumberOfDocument == doc.NumberOfDocument, doc);
         }
     }
 }

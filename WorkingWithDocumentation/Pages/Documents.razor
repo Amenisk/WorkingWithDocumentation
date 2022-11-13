@@ -41,13 +41,16 @@
                         <td><input name="isApproved" type="checkbox" @onclick="() => IsApproved(doc)" /></td>
                     }
                     
-                    <td><button @onclick="() => ProjectService.DownloadToLocal(doc.NumberOfDocument.ToString())">Скачать</button></td>
+                    <td><button @onclick="() => ProjectService.DownloadToLocal(doc.NumberOfDocument)">Скачать</button></td>
                 </tr>
             }
         </tbody>
     </table><br />
     <button type="button" class="btn btn-outline-primary" @onclick=Return>Вернуться к списку проектов</button>
 }
+
+<WaterForm Project="@project" />
+<GasForm Project="@project" />
 
 @code
 {
@@ -83,7 +86,7 @@
 
         if (doc.IsApproved)
             color = "green";
-        else if (ProjectService.CheckLoadDocumentByNumber(number))
+        else if (ProjectService.CheckLoadDocumentByNumber(doc.FileName))
             color = "yellow";
         else if (doc.IsImportant)
             color = "red";
