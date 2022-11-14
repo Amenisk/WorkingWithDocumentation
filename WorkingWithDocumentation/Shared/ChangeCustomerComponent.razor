@@ -20,7 +20,8 @@
                 </tr>
                 <tr>
                     <td>Введите телефон</td>
-                    <td><input type="tel" @bind-value="_customer.Telephone" placeholder="Введите телефон" style="width: 100%" required></td>
+                    <td><input type="tel" @bind-value="_customer.Telephone" placeholder="Введите телефон" style="width: 100%" required>
+                        <small class="form-text text-muted">Номер телефона состоит только из 11 цифр</small></td>
                 </tr>
                 <tr>
                     <td>Введите ФИО </td>
@@ -47,10 +48,10 @@
     </div>
 </div>
 
-if (isError)
+@if (isError)
 {
 <div class="alert alert-danger" role="alert">
-    <p>Поле почты заполнено некорректно.Следуйте подсказкам, расположенных под полем</p>
+    <p>Данные заполнены некорректно.Следуйте подсказкам, расположенных под полями записи</p>
 </div>
 }
 
@@ -68,7 +69,7 @@ if (isError)
 
     private void Save()
     {
-        if(CheckEmail(_customer.Email))
+        if(CheckEmail(_customer.Email) && CheckTel(_customer.Telephone))
         {
             UserService.ReplaceCustomer(_customer);
             isError = false;
@@ -88,5 +89,11 @@ if (isError)
     private bool CheckEmail(string email)
     {
         return email.Contains('@');
+    }
+
+    private bool CheckTel(string number)
+    {
+        Int64 num;
+        return Int64.TryParse(number, out num) && number.Length == 11;
     }
 }

@@ -47,10 +47,9 @@
         </tbody>
     </table><br />
     <button type="button" class="btn btn-outline-primary" @onclick=Return>Вернуться к списку проектов</button>
-}
+    <button type="button" class="btn btn-outline-primary" @onclick=GoToForm>Получить форму</button>
 
-<WaterForm Project="@project" />
-<GasForm Project="@project" />
+}
 
 @code
 {
@@ -92,5 +91,10 @@
             color = "red";
         else
             color = "";
+    }
+
+    private void GoToForm()
+    {
+        Navigation.NavigateTo("/formcontainercust");
     }
 }

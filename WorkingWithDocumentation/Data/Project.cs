@@ -9,6 +9,7 @@ namespace WorkingWithDocumentation.Data
         public ObjectId Id { get; set; }
         [BsonIgnoreIfDefault]
         public int NumberOfProject { get; set; }
+        public bool IsApproved { get; private set; }
         public string Type { get; set; }
         [BsonIgnoreIfDefault]
         public Customer RespCustomer { get; set; }
@@ -37,6 +38,27 @@ namespace WorkingWithDocumentation.Data
         public void AddDocument(Document document)
         {
             Documents.Add(document);
+        }
+
+        public void CheckApproving()
+        {
+            foreach(var doc in Documents)
+            {
+                if(doc.IsApproved == false)
+                {
+                    IsApproved = false;
+                    return;
+                }
+            }
+
+            if(WaterSupply is not null)
+            {
+                IsApproved = WaterSupply.IsApproved;
+            }
+            else if(GasSupply is not null)
+            {
+                IsApproved = GasSupply.IsApproved;
+            }   
         }
     }
 }

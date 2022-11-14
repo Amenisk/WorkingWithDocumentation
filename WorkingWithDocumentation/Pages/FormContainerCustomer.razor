@@ -1,0 +1,22 @@
+﻿@page "/formcontainercust"
+@inject ProjectService ProjectService
+
+@if(project.Type == "Водоснабжение")
+{
+    <WaterFormCustomer Project="@project" />
+}
+else
+{
+    <GasFormCustomer Project="@project" />
+}   
+
+@code
+{
+    Project project;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        project = ProjectService.GetProjectFromDBByNumber(ProjectService.NumberOfCurrentProject);
+    }
+}

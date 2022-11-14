@@ -1,0 +1,88 @@
+@using WorkingWithDocumentation.Data
+@inject NavigationManager Navigation
+@inject ProjectService ProjectService
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col" width="50%">Наименование</th>
+            <th scope="col">Заполнение</th>
+        </tr>
+        <tr>
+            <th colspan="2"><p style="text-align: center">Технико-экономические показатели</p></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Диаметр (мм) трубопровода и протяженность
+                линейного объекта (м)
+            </td>
+            <td><input @bind-value="form.DiameterOfCorpsePipelineAndLengthOfObject" style="width: 100%"></td>
+        </tr>
+        <tr>
+            <td>
+                Производительность БОС, м3/сут
+            </td>
+            <td><input @bind-value="form.PerformanceBOS" style="width: 100%"></td>
+        </tr>   
+        <tr>
+            <td>
+                Кол.-во (шт) и производительность КНС (м3/ч)
+            </td>
+            <td><input @bind-value="form.CountAndPerformanceKNS" style="width: 100%"></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Сметная стоимость работ, тыс. руб.</strong>
+            </td>
+            <td><input @bind-value="form.EstimatedCostOfWork" style="width: 100%"></td>
+        </tr>
+        <tr>
+            <td>
+                Срок разработки проектной документации, месяцев
+            </td>
+            <td><input @bind-value="form.TermForDevelopment" style="width: 100%"></td>
+        </tr>
+    </tbody>
+</table>
+<br />
+
+<button type="button" class="btn btn-primary" @onclick=ApproveForm>Утвердить форму</button>
+<button type="button" class="btn btn-primary" @onclick=GoBack>Выйти</button>
+@if(form.IsApproved)
+{
+    <input name="isImportant" type="checkbox" checked="checked" style="margin: 20px 20px 20px 20px" disabled/>
+}
+else
+{
+    <input name="isImportant" type="checkbox" style="margin: 20px 20px 20px 20px" disabled/>
+}
+
+@code {
+    [Parameter]
+    public Project Project { get; set; }
+
+    WaterSupplyForm form = new WaterSupplyForm();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if(Project.WaterSupply is not null)
+        {
+            form = Project.WaterSupply.Clone();
+        }   
+    }
+
+    private void ApproveForm()
+    {
+        form.IsApproved = true;
+        ProjectService.SaveWaterForm(form, Project.NumberOfProject);
+        GoBack();
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo("/documents");
+    }
+}

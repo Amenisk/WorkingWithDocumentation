@@ -139,11 +139,12 @@ namespace WorkingWithDocumentation.Data
             var update1 = Builders<Document>.Update.Set("IsImportant", doc.IsImportant);
             var update2 = Builders<Document>.Update.Set("IsApproved", doc.IsApproved);
             var project = collection2.Find(x => x.NumberOfProject == numberOfProject).FirstOrDefault();
+            project.Documents.Find(x => x.NumberOfDocument == doc.NumberOfDocument).IsImportant = doc.IsImportant;
+            project.Documents.Find(x => x.NumberOfDocument == doc.NumberOfDocument).IsApproved = doc.IsApproved;
+            project.CheckApproving();
 
             collection1.UpdateOne(filter, update1);
             collection1.UpdateOne(filter, update2);
-            project.Documents.Find(x => x.NumberOfDocument == doc.NumberOfDocument).IsImportant = doc.IsImportant;
-            project.Documents.Find(x => x.NumberOfDocument == doc.NumberOfDocument).IsApproved = doc.IsApproved;
 
             collection2.ReplaceOne(x => x.NumberOfProject == numberOfProject, project);
         }
@@ -178,9 +179,12 @@ namespace WorkingWithDocumentation.Data
             var collection = database.GetCollection<Document>("Documents");
             var doc = collection.Find(x => x.NumberOfDocument == number).FirstOrDefault();
             var gridFS = new GridFSBucket(database);
-            using (FileStream fs = new FileStream($"{Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/wwwroot/Docs/")}{doc.FileName}", FileMode.CreateNew))
+            if(doc.FileName != null)
+            {
+                using (FileStream fs = new FileStream($"{Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/wwwroot/Docs/")}{doc.FileName}", FileMode.CreateNew))
             {
                 gridFS.DownloadToStreamByName(doc.FileName, fs);
+            }
             }
         }
 
@@ -202,9 +206,14 @@ namespace WorkingWithDocumentation.Data
             var database = client.GetDatabase("DocumentFlow");
             var collection = database.GetCollection<Project>("Projects");
             var filter = Builders<Project>.Filter.Eq("NumberOfProject", numberOfProject);
-            var update = Builders<Project>.Update.Set("WaterSupply", form);
+            var update1 = Builders<Project>.Update.Set("WaterSupply", form);
+            var project = collection.Find(x => x.NumberOfProject == numberOfProject).FirstOrDefault();
+            project.CheckApproving();
+            var update2 = Builders<Project>.Update.Set("IsApproved", project.IsApproved);
 
-            collection.UpdateOne(filter, update);
+            collection.UpdateOne(filter, update1);
+            collection.UpdateOne(filter, update2);
+           
         }
 
         public void SaveGasForm(GasSupplyForm form, int numberOfProject)
@@ -214,8 +223,13 @@ namespace WorkingWithDocumentation.Data
             var collection = database.GetCollection<Project>("Projects");
             var filter = Builders<Project>.Filter.Eq("NumberOfProject", numberOfProject);
             var update = Builders<Project>.Update.Set("GasSupply", form);
+            var project = collection.Find(x => x.NumberOfProject == numberOfProject).FirstOrDefault();
+            project.CheckApproving();
+            var update2 = Builders<Project>.Update.Set("IsApproved", project.IsApproved);
 
             collection.UpdateOne(filter, update);
+            collection.UpdateOne(filter, update2);
+
         }
 
         public void DeleteDocument(int numberOfDocument)

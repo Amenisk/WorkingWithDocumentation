@@ -18,7 +18,8 @@
         <tbody>
             @foreach (var number in numbersOfProjects)
             {
-                <tr>
+                CheckColor(number);
+                <tr style="background-color: @color">
                     <td>@number</td>
                     <td>@ProjectService.GetProjectFromDBByNumber(number).RespDesigner.NameOfDesignOrg</td>
                     <td>@ProjectService.GetProjectFromDBByNumber(number).RespDeveloper.DeveloperName</td>
@@ -41,6 +42,7 @@ else
     public Customer Customer { get; set; }
     List<int> numbersOfProjects = new List<int>();
     bool projectIsCreating;
+    string color;
 
     protected override void OnInitialized()
     {
@@ -58,4 +60,14 @@ else
         ProjectService.NumberOfCurrentProject = number;
         Navigation.NavigateTo("/documents");
     } 
+
+     private void CheckColor(int number)
+    {
+        var project = ProjectService.GetProjectFromDBByNumber(number);
+
+        if (project.IsApproved)
+            color = "green";
+        else
+            color = "";
+    }
 }
