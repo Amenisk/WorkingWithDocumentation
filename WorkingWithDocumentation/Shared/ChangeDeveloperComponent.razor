@@ -36,13 +36,13 @@
                 <tr>
                     <td>Введите ИНН </td>
                     <td><input @bind-value="_developer.ITN" placeholder="Введите ИНН" style="width: 100%" required>
-                        <small class="form-text text-muted">ИНН состоит из 9 цифр</small>
+                        <small class="form-text text-muted">ИНН состоит из 10 цифр</small>
                     </td>
                 </tr>
                 <tr>
                     <td>Введите КПП </td>
                     <td><input @bind-value="_developer.KPP" placeholder="Введите КПП" style="width: 100%" required>
-                        <small class="form-text text-muted">КПП состоит из 10 цифр</small>
+                        <small class="form-text text-muted">КПП состоит из 9 цифр</small>
                     </td>
                 </tr>
                 <tr>
@@ -121,13 +121,13 @@
     private bool CheckITN(string itn)
     {
         Int64 num;
-        return Int64.TryParse(itn, out num) && itn.Length == 9;
+        return Int64.TryParse(itn, out num) && itn.Length == 10;
     }
 
     private bool CheckKPP(string kpp)
     {
         Int64 num;
-        return Int64.TryParse(kpp, out num) && kpp.Length == 10;
+        return Int64.TryParse(kpp, out num) && kpp.Length == 9;
     }
 }
 
